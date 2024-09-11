@@ -1,5 +1,14 @@
 @echo off
-
+NET SESSION >nul 2>&1
+if '%errorlevel%' == '0' (
+    :: We have Administrator privileges
+    echo Running with Administrator privileges.
+) else (
+    :: We do not have Administrator privileges
+    echo Requesting Administrator privileges...
+    powershell.exe -Command "Start-Process cmd.exe -ArgumentList '/c %~f0 %*' -Verb RunAs"
+    exit /b
+)
 :: Re-enable and start services
 sc config Browser start= auto
 sc start Browser
